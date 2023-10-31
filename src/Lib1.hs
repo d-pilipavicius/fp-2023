@@ -11,10 +11,8 @@ where
 import DataFrame (DataFrame (..), Row, Column (..), ColumnType (..), Value (..))
 import InMemoryTables (TableName)
 
+import CustomDataTypes
 import Data.Char (toUpper, toLower)
-
-type ErrorMessage = String
-
 type Database = [(TableName, DataFrame)]
 
 -- Your code modifications go below this comment
@@ -199,6 +197,7 @@ renderRows :: Integer -> DataFrame -> String
 renderRows l df = renderRowsEl (calcLength l (columnElementCount (dfCol df))) (dfRows df) (rowCount (dfRows df)) ""
 
 renderRowsEl :: Integer -> [Row] -> Integer -> String -> String
+renderRowsEl l [] _ _ = createWhiteSpaceString l
 renderRowsEl l (x:xs) i rez = 
 	if i > 1 then renderRowsEl l xs (i-1) (rez ++ (renderRow l x (rowElementCount x) "") ++ "\n") else (rez ++ (renderRow l x (rowElementCount x) ""))
 
