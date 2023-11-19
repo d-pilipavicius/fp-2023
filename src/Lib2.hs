@@ -2,6 +2,7 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# HLINT ignore "Use lambda-case" #-}
+{-# OPTIONS_GHC -Wno-unused-matches #-}
 
 module Lib2( 
     parseStatement,
@@ -16,19 +17,18 @@ import CustomDataTypes
 import Functions.DFOperating
 import Functions.ListOperating
 import Functions.ValueComparing
-import Lib1 (findTableByName, renderDataFrameAsTable)
+import Lib1 (findTableByName)
 import InMemoryTables (TableName, database)
-import DataFrame (DataFrame (..), Row, Column (..), ColumnType (..), Value (..))
-
-import Data.Char (toLower, isAlphaNum, isSpace)
-import Control.Applicative ((<|>), empty, Alternative(some, many))
+import DataFrame (DataFrame (..), Column (..), ColumnType (..), Value (..))
+import Control.Applicative ((<|>), Alternative (many))
+import Data.Char (isSpace)
 
 type Database = [(TableName, DataFrame)]
 type ValidOperators = [String]
 
 --Constants
 errorTemplate :: Either ErrorMessage (String, a) -> Parser a
-errorTemplate a = Parser $ \inp -> a
+errorTemplate a = Parser $ \_ -> a
 
 semicolonError :: Parser a
 semicolonError = errorTemplate $ Left _ERROR_MISSING_SEMICOLON
@@ -114,13 +114,13 @@ parseTable = do
 parseRestSelect :: Parser ParsedStatement
 parseRestSelect = do
   _ <- many parseSpace
-  columns <- parseColumns
+  pColumns <- parseColumns
   _ <- many parseSpace
   _ <- parseInsensitiveWord "FROM"
   _ <- many parseSpace
   tableName <- parseName
   _ <- many parseSpace
-  ParsedTable tableName columns <$> parseConditions
+  ParsedTable tableName pColumns <$> parseConditions
 
 --Select statement setup END
 
@@ -140,16 +140,16 @@ parseAggregate = do
   _ <- many parseSpace
   _ <- parseChar '('
   _ <- many parseSpace
-  column <- parseAllC <|> parseSingleC
+  pColumn <- parseAllC <|> parseSingleC
   _ <- many parseSpace
   _ <- parseChar ')'
-  return $ Func {name = (stringToLower fun), column = column}
+  return $ Func {name = (stringToLower fun), column = pColumn}
 
 parseColumnList :: Parser Columns
 parseColumnList = do
-  name <- parseName
+  pName <- parseName
   other <- many parseNames
-  return $ ColumnList $ name:other
+  return $ ColumnList $ pName:other
 
 parseNames :: Parser String
 parseNames = do
@@ -191,7 +191,7 @@ parseCondition = do
   op <- parseOperator
   _ <- many parseSpace
   con2 <- parseName
-  return $ (con1, op, con2)
+  return (con1, op, con2)
 
 parseWhereEnding :: Parser Conditions
 parseWhereEnding = (\_ -> NoConditions) <$> parseEnding
@@ -242,7 +242,7 @@ parseOnlyUntil :: (Char -> Bool) -> Char -> Parser Char
 parseOnlyUntil f c = Parser $ \inp -> 
   case inp of
     [] -> Left _EMPTY_INPUT_ERROR
-    (x:xs) -> if (x == c) 
+    (x:xs) -> if x == c 
       then Right (c:xs, c) 
       else if f x 
         then runParser (parseOnlyUntil f c) xs
@@ -265,7 +265,7 @@ parseInsensitiveWord = parseWordWithCustomEquality caseInsensitiveEquality
 --DataFrame extractor by table name
 extractDataFrame :: Database -> Executor DataFrame
 extractDataFrame db = Executor $ \st ->
-  if elem (table st) $ map (\(x, xs) -> x) db
+  if elem (table st) $ map fst db
     then maybeToEither $ findTableByName db $ table st
     else Left $ _ERROR_NO_TABLE_IN_DATABASE $ table st
 --DataFrame extractor by table name END
@@ -291,8 +291,7 @@ executorSelect :: Database -> Executor DataFrame
 executorSelect db = do
   df <- extractDataFrame db
   df1 <- executeConditions df
-  df2 <- executorFrom df1
-  return df2
+  executorFrom df1
 --ParseTable executor setup END
 
 --ParseTable Columns section executor 

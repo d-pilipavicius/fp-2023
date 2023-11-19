@@ -1,4 +1,6 @@
 {-# LANGUAGE InstanceSigs #-}
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
 module Functions.DFOperating (
     isColumn,
     removeRow,
@@ -48,41 +50,41 @@ removeColumn i (DataFrame cols rows) = DataFrame (removeElementFromList i [] col
 removeColumnsByName :: [String] -> DataFrame -> DataFrame
 removeColumnsByName s df =
   case cropDuplicates s of
-    s -> removeColumnsByName1 s df
+    s1 -> removeColumnsByName1 s1 df
 
 getColumnWhole :: String -> DataFrame -> Either ErrorMessage DataFrame
-getColumnWhole s df = 
-  case getColumnData s df of 
+getColumnWhole s df =
+  case getColumnData s df of
     Right r -> Right $ DataFrame [r] (getColumnRows s df)
     Left l -> Left l
 
 getColumnData :: String -> DataFrame -> Either ErrorMessage Column
-getColumnData name (DataFrame [] _) = Left $ _ERROR_COLUMN_NOT_FOUND name
-getColumnData name (DataFrame ((Column x t):xs) _) = if x == name 
-  then Right (Column x t) 
-  else getColumnData name (DataFrame xs [])
+getColumnData cName (DataFrame [] _) = Left $ _ERROR_COLUMN_NOT_FOUND cName
+getColumnData cName (DataFrame ((Column x t):xs) _) = if x == cName
+  then Right (Column x t)
+  else getColumnData cName (DataFrame xs [])
 
 columnsInTable :: [String] -> DataFrame -> Either ErrorMessage DataFrame
 columnsInTable [] df = Right df
-columnsInTable (s:ss) (DataFrame cols _) = if elem s $ map (\(Column name _)->name) cols
+columnsInTable (s:ss) (DataFrame cols _) = if elem s $ map (\(Column cName _)-> cName) cols
   then columnsInTable ss (DataFrame cols [])
   else Left $ _ERROR_COLUMN_NOT_FOUND s
 
 getColumnRows :: String -> DataFrame -> [Row]
-getColumnRows s (DataFrame [] _) = []
-getColumnRows s df = 
+getColumnRows _ (DataFrame [] _) = []
+getColumnRows s df =
   case df of
-    DataFrame ((Column name _):xs) r -> if name == s 
-      then map (\(x:xs) -> [x]) r
+    DataFrame ((Column cName _):_) r -> if cName == s
+      then map (\(x:_) -> [x]) r
       else getColumnRows s (removeColumn 0 df)
 
 getRow :: Integer -> DataFrame -> Row
 getRow 0 (DataFrame _ []) = []
-getRow 0 (DataFrame _ (x:_)) = x 
+getRow 0 (DataFrame _ (x:_)) = x
 getRow i (DataFrame _ (_:xs)) = getRow (i-1) (DataFrame [] xs)
 
 getColumnId :: String -> DataFrame -> Integer
-getColumnId s df = getColumnId1 s df 0 
+getColumnId s df = getColumnId1 s df 0
 
 getRowValue :: Integer -> Row -> Value
 getRowValue 0 (x:_) = x
@@ -106,7 +108,7 @@ getColumnId1 s (DataFrame ((Column cName _):xs) _) i = if s == cName
 
 isColumn1 :: String -> [Column] -> Bool
 isColumn1 _ [] = False
-isColumn1 s ((Column n _):xs) = if n == s then True else isColumn1 s xs
+isColumn1 s ((Column n _):xs) = (n == s) || isColumn1 s xs
 
 sumUpRows1 :: [Row] -> Integer -> Row
 sumUpRows1 [] i = [IntegerValue i]

@@ -23,7 +23,7 @@ findTableByName :: Database -> String -> Maybe DataFrame
 findTableByName [] _ = Nothing
 findTableByName _ "" = Nothing
 findTableByName (x:xs) n = 
-	if (stringToLower (getTableName x)) == (stringToLower n) then Just (getDataFrame x) else findTableByName xs n
+	if stringToLower (getTableName x) == stringToLower n then Just (getDataFrame x) else findTableByName xs n
 
 getTableName :: (TableName, DataFrame) -> TableName
 getTableName (x,_) = x
@@ -188,10 +188,10 @@ createStringLengthC (Column n _) 0 = n
 createStringLengthC (Column n _) l = n ++ createWhiteSpaceString (l-(toInteger(length n)))
 
 createWhiteSpaceString :: Integer -> String
-createWhiteSpaceString i = [' ' | a <- [1 .. i]]
+createWhiteSpaceString i = [' ' | _ <- [1 .. i]]
 
 createMinusString :: Integer -> String
-createMinusString i = (['-' | a <- [1 .. i]] ++ "\n")
+createMinusString i = ['-' | _ <- [1 .. i]] ++ "\n"
 
 renderRows :: Integer -> DataFrame -> String
 renderRows l df = renderRowsEl (calcLength l (columnElementCount (dfCol df))) (dfRows df) (rowCount (dfRows df)) ""
@@ -209,10 +209,9 @@ getValue :: Value -> String
 getValue (IntegerValue x) = show x
 getValue (BoolValue x) = show x
 getValue (StringValue x) = x
-getValue (NullValue) = ""
+getValue NullValue = ""
 
 createStringLengthH :: String -> Integer -> String
 createStringLengthH v 0 = v
-createStringLengthH v l = (v ++ createWhiteSpaceString (l-(toInteger(length v))))
-
+createStringLengthH v l = v ++ createWhiteSpaceString (l - toInteger (length v))
 --4th end

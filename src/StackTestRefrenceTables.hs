@@ -1,7 +1,7 @@
+{-# OPTIONS_GHC -Wno-missing-export-lists #-}
 module StackTestRefrenceTables where
 
 import DataFrame
-import InMemoryTables
 import CustomDataTypes
 
 fun1 :: ParsedStatement

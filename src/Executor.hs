@@ -1,8 +1,10 @@
 {-# LANGUAGE InstanceSigs #-}
+{-# OPTIONS_GHC -Wno-unused-imports #-}
+{-# OPTIONS_GHC -Wno-missing-export-lists #-}
 module Executor where
 
 import CustomDataTypes
-import Control.Applicative ((<|>), empty, Alternative(some, many))
+import Control.Applicative ((<|>), empty, Alternative(many))
 
 newtype Executor a = Executor {
   runExecutor :: ParsedStatement -> Either ErrorMessage a
@@ -33,7 +35,7 @@ instance Alternative Executor where
   e1 <|> e2 = Executor $ \st ->
     case runExecutor e1 st of 
       Right r1 -> Right r1 
-      Left l1 -> case runExecutor e2 st of
+      Left _ -> case runExecutor e2 st of
         Right r2 -> Right r2
         Left l2 -> Left l2
 
