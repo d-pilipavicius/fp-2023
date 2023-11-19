@@ -10,10 +10,10 @@ where
 import Control.Monad.Free (Free (..), liftF)
 import DataFrame (DataFrame)
 import Data.Time ( UTCTime )
+import CustomDataTypes ( ErrorMessage )
 
 type TableName = String
 type FileContent = String
-type ErrorMessage = String
 
 data ExecutionAlgebra next
   = LoadFile TableName (FileContent -> next)
