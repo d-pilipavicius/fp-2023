@@ -32,12 +32,15 @@ library
       Functions.DFOperating
       Functions.ListOperating
       Functions.ValueComparing
+      GeneralConstants
       InMemoryTables
       Lib1
       Lib2
       Lib3
       Parser
+      ParserConstants
       StackTestRefrenceTables
+      YamlHandler
   other-modules:
       Paths_fp2023
   hs-source-dirs:
@@ -50,6 +53,10 @@ library
     , free
     , time
     , transformers
+    , yaml
+    , split
+    , directory
+    , filepath
   default-language: Haskell2010
 
 executable fp2023-manipulate
@@ -67,8 +74,10 @@ executable fp2023-manipulate
     , fp2023
     , free
     , repline
+    , split
     , terminal-size
     , time
+    , yaml
   default-language: Haskell2010
 
 executable fp2023-select-all
@@ -86,6 +95,7 @@ executable fp2023-select-all
     , fp2023
     , repline
     , terminal-size
+    , yaml
   default-language: Haskell2010
 
 executable fp2023-select-more
@@ -103,6 +113,7 @@ executable fp2023-select-more
     , fp2023
     , repline
     , terminal-size
+    , yaml
   default-language: Haskell2010
 
 test-suite fp2023-test
@@ -119,4 +130,6 @@ test-suite fp2023-test
       base >=4.7 && <5
     , fp2023
     , hspec
+    , yaml
+    , free
   default-language: Haskell2010

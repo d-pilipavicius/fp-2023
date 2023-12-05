@@ -5,6 +5,9 @@ module Lib1
     findTableByName,
     validateDataFrame,
     renderDataFrameAsTable,
+		isRowAndColumnTypeMatching,
+		getType,
+		matchValueToType
   )
 where
 

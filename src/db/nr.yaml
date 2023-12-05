@@ -1,0 +1,404 @@
+- - - value
+    - IntegerType
+  - - name
+    - StringType
+- - - contents: 1
+      tag: IntegerValue
+    - contents: One
+      tag: StringValue
+  - - contents: 2
+      tag: IntegerValue
+    - contents: Two
+      tag: StringValue
+  - - contents: 3
+      tag: IntegerValue
+    - contents: Three
+      tag: StringValue
+  - - contents: 4
+      tag: IntegerValue
+    - contents: Four
+      tag: StringValue
+  - - contents: 5
+      tag: IntegerValue
+    - contents: Five
+      tag: StringValue
+  - - contents: 6
+      tag: IntegerValue
+    - contents: Six
+      tag: StringValue
+  - - contents: 7
+      tag: IntegerValue
+    - contents: Seven
+      tag: StringValue
+  - - contents: 8
+      tag: IntegerValue
+    - contents: Eight
+      tag: StringValue
+  - - contents: 9
+      tag: IntegerValue
+    - contents: Nine
+      tag: StringValue
+  - - contents: 10
+      tag: IntegerValue
+    - contents: Ten
+      tag: StringValue
+  - - contents: 11
+      tag: IntegerValue
+    - contents: Eleven
+      tag: StringValue
+  - - contents: 12
+      tag: IntegerValue
+    - contents: Twelve
+      tag: StringValue
+  - - contents: 13
+      tag: IntegerValue
+    - contents: Thirteen
+      tag: StringValue
+  - - contents: 14
+      tag: IntegerValue
+    - contents: Fourteen
+      tag: StringValue
+  - - contents: 15
+      tag: IntegerValue
+    - contents: Fifteen
+      tag: StringValue
+  - - contents: 16
+      tag: IntegerValue
+    - contents: Sixteen
+      tag: StringValue
+  - - contents: 17
+      tag: IntegerValue
+    - contents: Seventeen
+      tag: StringValue
+  - - contents: 18
+      tag: IntegerValue
+    - contents: Eighteen
+      tag: StringValue
+  - - contents: 19
+      tag: IntegerValue
+    - contents: Nineteen
+      tag: StringValue
+  - - contents: 20
+      tag: IntegerValue
+    - contents: Twenty
+      tag: StringValue
+  - - contents: 21
+      tag: IntegerValue
+    - contents: Twenty-one
+      tag: StringValue
+  - - contents: 22
+      tag: IntegerValue
+    - contents: Twenty-two
+      tag: StringValue
+  - - contents: 23
+      tag: IntegerValue
+    - contents: Twenty-three
+      tag: StringValue
+  - - contents: 24
+      tag: IntegerValue
+    - contents: Twenty-four
+      tag: StringValue
+  - - contents: 25
+      tag: IntegerValue
+    - contents: Twenty-five
+      tag: StringValue
+  - - contents: 26
+      tag: IntegerValue
+    - contents: Twenty-six
+      tag: StringValue
+  - - contents: 27
+      tag: IntegerValue
+    - contents: Twenty-seven
+      tag: StringValue
+  - - contents: 28
+      tag: IntegerValue
+    - contents: Twenty-eight
+      tag: StringValue
+  - - contents: 29
+      tag: IntegerValue
+    - contents: Twenty-nine
+      tag: StringValue
+  - - contents: 30
+      tag: IntegerValue
+    - contents: Thirty
+      tag: StringValue
+  - - contents: 31
+      tag: IntegerValue
+    - contents: Thirty-one
+      tag: StringValue
+  - - contents: 32
+      tag: IntegerValue
+    - contents: Thirty-two
+      tag: StringValue
+  - - contents: 33
+      tag: IntegerValue
+    - contents: Thirty-three
+      tag: StringValue
+  - - contents: 34
+      tag: IntegerValue
+    - contents: Thirty-four
+      tag: StringValue
+  - - contents: 35
+      tag: IntegerValue
+    - contents: Thirty-five
+      tag: StringValue
+  - - contents: 36
+      tag: IntegerValue
+    - contents: Thirty-six
+      tag: StringValue
+  - - contents: 37
+      tag: IntegerValue
+    - contents: Thirty-seven
+      tag: StringValue
+  - - contents: 38
+      tag: IntegerValue
+    - contents: Thirty-eight
+      tag: StringValue
+  - - contents: 39
+      tag: IntegerValue
+    - contents: Thirty-nine
+      tag: StringValue
+  - - contents: 40
+      tag: IntegerValue
+    - contents: Forty
+      tag: StringValue
+  - - contents: 41
+      tag: IntegerValue
+    - contents: Forty-one
+      tag: StringValue
+  - - contents: 42
+      tag: IntegerValue
+    - contents: Forty-two
+      tag: StringValue
+  - - contents: 43
+      tag: IntegerValue
+    - contents: Forty-three
+      tag: StringValue
+  - - contents: 44
+      tag: IntegerValue
+    - contents: Forty-four
+      tag: StringValue
+  - - contents: 45
+      tag: IntegerValue
+    - contents: Forty-five
+      tag: StringValue
+  - - contents: 46
+      tag: IntegerValue
+    - contents: Forty-six
+      tag: StringValue
+  - - contents: 47
+      tag: IntegerValue
+    - contents: Forty-seven
+      tag: StringValue
+  - - contents: 48
+      tag: IntegerValue
+    - contents: Forty-eight
+      tag: StringValue
+  - - contents: 49
+      tag: IntegerValue
+    - contents: Forty-nine
+      tag: StringValue
+  - - contents: 50
+      tag: IntegerValue
+    - contents: Fifty
+      tag: StringValue
+  - - contents: 51
+      tag: IntegerValue
+    - contents: Fifty-one
+      tag: StringValue
+  - - contents: 52
+      tag: IntegerValue
+    - contents: Fifty-two
+      tag: StringValue
+  - - contents: 53
+      tag: IntegerValue
+    - contents: Fifty-three
+      tag: StringValue
+  - - contents: 54
+      tag: IntegerValue
+    - contents: Fifty-four
+      tag: StringValue
+  - - contents: 55
+      tag: IntegerValue
+    - contents: Fifty-five
+      tag: StringValue
+  - - contents: 56
+      tag: IntegerValue
+    - contents: Fifty-six
+      tag: StringValue
+  - - contents: 57
+      tag: IntegerValue
+    - contents: Fifty-seven
+      tag: StringValue
+  - - contents: 58
+      tag: IntegerValue
+    - contents: Fifty-eight
+      tag: StringValue
+  - - contents: 59
+      tag: IntegerValue
+    - contents: Fifty-nine
+      tag: StringValue
+  - - contents: 60
+      tag: IntegerValue
+    - contents: Sixty
+      tag: StringValue
+  - - contents: 61
+      tag: IntegerValue
+    - contents: Sixty-one
+      tag: StringValue
+  - - contents: 62
+      tag: IntegerValue
+    - contents: Sixty-two
+      tag: StringValue
+  - - contents: 63
+      tag: IntegerValue
+    - contents: Sixty-three
+      tag: StringValue
+  - - contents: 64
+      tag: IntegerValue
+    - contents: Sixty-four
+      tag: StringValue
+  - - contents: 65
+      tag: IntegerValue
+    - contents: Sixty-five
+      tag: StringValue
+  - - contents: 66
+      tag: IntegerValue
+    - contents: Sixty-six
+      tag: StringValue
+  - - contents: 67
+      tag: IntegerValue
+    - contents: Sixty-seven
+      tag: StringValue
+  - - contents: 68
+      tag: IntegerValue
+    - contents: Sixty-eight
+      tag: StringValue
+  - - contents: 69
+      tag: IntegerValue
+    - contents: Sixty-nine
+      tag: StringValue
+  - - contents: 70
+      tag: IntegerValue
+    - contents: Seventy
+      tag: StringValue
+  - - contents: 71
+      tag: IntegerValue
+    - contents: Seventy-one
+      tag: StringValue
+  - - contents: 72
+      tag: IntegerValue
+    - contents: Seventy-two
+      tag: StringValue
+  - - contents: 73
+      tag: IntegerValue
+    - contents: Seventy-three
+      tag: StringValue
+  - - contents: 74
+      tag: IntegerValue
+    - contents: Seventy-four
+      tag: StringValue
+  - - contents: 75
+      tag: IntegerValue
+    - contents: Seventy-five
+      tag: StringValue
+  - - contents: 76
+      tag: IntegerValue
+    - contents: Seventy-six
+      tag: StringValue
+  - - contents: 77
+      tag: IntegerValue
+    - contents: Seventy-seven
+      tag: StringValue
+  - - contents: 78
+      tag: IntegerValue
+    - contents: Seventy-eight
+      tag: StringValue
+  - - contents: 79
+      tag: IntegerValue
+    - contents: Seventy-nine
+      tag: StringValue
+  - - contents: 80
+      tag: IntegerValue
+    - contents: Eighty
+      tag: StringValue
+  - - contents: 81
+      tag: IntegerValue
+    - contents: Eighty-one
+      tag: StringValue
+  - - contents: 82
+      tag: IntegerValue
+    - contents: Eighty-two
+      tag: StringValue
+  - - contents: 83
+      tag: IntegerValue
+    - contents: Eighty-three
+      tag: StringValue
+  - - contents: 84
+      tag: IntegerValue
+    - contents: Eighty-four
+      tag: StringValue
+  - - contents: 85
+      tag: IntegerValue
+    - contents: Eighty-five
+      tag: StringValue
+  - - contents: 86
+      tag: IntegerValue
+    - contents: Eighty-six
+      tag: StringValue
+  - - contents: 87
+      tag: IntegerValue
+    - contents: Eighty-seven
+      tag: StringValue
+  - - contents: 88
+      tag: IntegerValue
+    - contents: Eighty-eight
+      tag: StringValue
+  - - contents: 89
+      tag: IntegerValue
+    - contents: Eighty-nine
+      tag: StringValue
+  - - contents: 90
+      tag: IntegerValue
+    - contents: Ninety
+      tag: StringValue
+  - - contents: 91
+      tag: IntegerValue
+    - contents: Ninety-one
+      tag: StringValue
+  - - contents: 92
+      tag: IntegerValue
+    - contents: Ninety-two
+      tag: StringValue
+  - - contents: 93
+      tag: IntegerValue
+    - contents: Ninety-three
+      tag: StringValue
+  - - contents: 94
+      tag: IntegerValue
+    - contents: Ninety-four
+      tag: StringValue
+  - - contents: 95
+      tag: IntegerValue
+    - contents: Ninety-five
+      tag: StringValue
+  - - contents: 96
+      tag: IntegerValue
+    - contents: Ninety-six
+      tag: StringValue
+  - - contents: 97
+      tag: IntegerValue
+    - contents: Ninety-seven
+      tag: StringValue
+  - - contents: 98
+      tag: IntegerValue
+    - contents: Ninety-eight
+      tag: StringValue
+  - - contents: 99
+      tag: IntegerValue
+    - contents: Ninety-nine
+      tag: StringValue
+  - - contents: 100
+      tag: IntegerValue
+    - contents: One hundred
+      tag: StringValue
