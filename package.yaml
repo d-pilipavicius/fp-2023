@@ -21,6 +21,7 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- yaml 
 
 default-extensions:
 - ImportQualifiedPost
@@ -82,6 +83,7 @@ executables:
     - terminal-size
     - free
     - time
+    - split
 
 tests:
   fp2023-test:

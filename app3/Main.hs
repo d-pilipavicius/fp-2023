@@ -9,6 +9,8 @@ import Data.List qualified as L
 import Lib1 qualified
 import Lib2 qualified
 import Lib3 qualified
+import CustomDataTypes qualified as CDTS
+import YamlHandler qualified as YH 
 import System.Console.Repline
   ( CompleterStyle (Word),
     ExitDecision (Exit),
@@ -63,6 +65,13 @@ runExecuteIO (Free step) = do
     next <- runStep step
     runExecuteIO next
     where
-        -- probably you will want to extend the interpreter
         runStep :: Lib3.ExecutionAlgebra a -> IO a
         runStep (Lib3.GetTime next) = getCurrentTime >>= return . next
+        runStep (Lib3.LoadDatabase next) = YH.readDBWithTablesYAML >>= return . next
+        runStep (Lib3.WriteOutTable tName df next) = YH.writeDFYAML tName df >>= return . next
+        runStep (Lib3.ExecuteLib2 db time boolVal st next) = (return $ do
+          db1 <- db
+          ps <- Lib2.parseStatement st
+          df <- Lib2.executeStatement db1 ps
+          df1 <- Lib3.insertTime time df
+          return (CDTS.table ps, df1)) >>= return . next
