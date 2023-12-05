@@ -4,8 +4,7 @@ module Lib3
     Execution,
     ExecutionAlgebra(..),
     insertTime,
-    getCurrentTime,
-    exportFun
+    getCurrentTime
   )
 where
 
@@ -61,27 +60,3 @@ executeSql sql = do
           _ <- writeOutTable (fst r) (snd r)
           return $ Right $ snd r
         else return $ Right $ snd r
-
-
---REMOVE THIS LATER
-runExecuteIO :: Execution r -> IO r
-runExecuteIO (Pure r) = return r
-runExecuteIO (Free step) = do
-    next <- runStep step
-    runExecuteIO next
-    where
-        runStep :: ExecutionAlgebra a -> IO a
-        runStep (GetTime next) = getCurrentTime >>= return . next
-        runStep (LoadDatabase next) = readDBWithTablesYAML >>= return . next
-        runStep (WriteOutTable tName df next) = putStrLn tName >>= return . next
-        runStep (ExecuteLib2 db time boolVal st next) = (return $ do
-          db1 <- db
-          ps <- parseStatement st
-          df <- executeStatement db1 ps
-          df1 <- insertTime time df
-          return (table ps, df1)) >>= return . next
-
-exportFun :: String -> IO String
-exportFun s = do 
-  df <- runExecuteIO $ executeSql s
-  return $ show df 
