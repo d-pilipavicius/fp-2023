@@ -122,11 +122,6 @@ writeDBYAML strs = do
   encodeFile dir strs
 --THIS SHOULD BE USED ONLY TO CHANGE THE DATABASE BY HAND END
 
-writeDFYAML1 :: String -> DataFrame -> IO ()
-writeDFYAML1 s df = do 
-  dir <- defaultDbDir
-  encodeFile (dir </> s ++".yaml") df
-
 readDBWithTablesYAML :: IO (Either ErrorMessage [(String, DataFrame)])
 readDBWithTablesYAML = do
   names <- readDBYAML
