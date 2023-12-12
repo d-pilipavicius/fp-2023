@@ -4,7 +4,10 @@ module YamlHandler(
     readDFYAML,
     readDBYAML,
     writeDFYAML,
-    readDBWithTablesYAML
+    readDBWithTablesYAML,
+    toDFExpr,
+    render,
+    DFExpr (..)
   )
 where 
 
@@ -34,7 +37,7 @@ data DFExpr
   | ORow [DFExpr]
   | OColumn String ColumnType
   | OValue Value
-  deriving Show
+  deriving (Eq, Show)
 
 render :: DFExpr -> String
 render (OValue (IntegerValue i)) = concat ["contents: ",show i,"\ntag: IntegerValue\n"]

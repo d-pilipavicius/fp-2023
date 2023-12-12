@@ -66,12 +66,6 @@ runExecuteIO (Free step) = do
     runExecuteIO next
     where
         runStep :: Lib3.ExecutionAlgebra a -> IO a
-        runStep (Lib3.GetTime next) = getCurrentTime >>= return . next
+        runStep (Lib3.GetTime next) = return getCurrentTime >>= return . next
         runStep (Lib3.LoadDatabase next) = YH.readDBWithTablesYAML >>= return . next
         runStep (Lib3.WriteOutTable tName df next) = YH.writeDFYAML tName df >>= return . next
-        runStep (Lib3.ExecuteLib2 db time boolVal st next) = (return $ do
-          db1 <- db
-          ps <- Lib2.parseStatement st
-          df <- Lib2.executeStatement db1 ps
-          df1 <- Lib3.insertTime time df
-          return (CDTS.table ps, df1)) >>= return . next
