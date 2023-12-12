@@ -58,7 +58,7 @@ runExecuteIO (Free step) = do
     runExecuteIO next
     where
         runStep :: Lib3.ExecutionAlgebra a -> IO a
-        runStep (Lib3.GetTime next) = return testTime >>= return . next
+        runStep (Lib3.GetTime next) = (return testTime) >>= return . next
         runStep (Lib3.LoadDatabase next) = getDbFromInMemoryDatabase >>= return . next
         runStep (Lib3.WriteOutTable tName df next) = updateTableInMemory df tName >>= return . next
 
