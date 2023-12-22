@@ -3,8 +3,7 @@ module Lib3
   ( executeSql,
     Execution,
     ExecutionAlgebra(..),
-    insertTime,
-    getCurrentTime
+    insertTime
   )
 where
 
@@ -12,14 +11,11 @@ import Lib2
 import Control.Monad.Free (Free (..), liftF)
 import Functions.DFOperating
 import DataFrame (DataFrame, Value (StringValue))
-import Data.Time ( UTCTime, getCurrentTime)
+import Data.Time ( UTCTime )
 import CustomDataTypes ( ErrorMessage, ParsedStatement(..))
-import YamlHandler ( writeDFYAML, readDBWithTablesYAML, readDFYAML )
 import GeneralConstants (_TIME_INSERT_VALUE)
 
 type TableName = String
-type FileContent = String
-type Statement = String
 
 data ExecutionAlgebra next
   = LoadDatabase (Either ErrorMessage Database -> next)
@@ -43,15 +39,17 @@ writeOutTable tName df = liftF $ WriteOutTable tName df id
 insertTime :: UTCTime -> DataFrame -> Either ErrorMessage DataFrame
 insertTime t = changeAllColumnValuesTo (StringValue _TIME_INSERT_VALUE) (StringValue $ show t)
 
-executeLib2 :: Either ErrorMessage Database -> UTCTime -> Bool -> String -> Execution (Either ErrorMessage (TableName, DataFrame))
-executeLib2 db time boolVal st = liftF $ ExecuteLib2 db time boolVal st id 
-
 executeSql :: String -> Execution (Either ErrorMessage DataFrame)
 executeSql sql = do
   db <- readDatabase
   let boolVal = isUpdatingDb sql
   time <- getTime
-  df <- executeLib2 db time boolVal sql
+  df <- return $ do
+    db1 <- db
+    ps <- parseStatement sql
+    df <- executeStatement db1 ps
+    df1 <- insertTime time df
+    return (table ps, df1)
   case df of
     Left l -> return $ Left l
     Right r ->

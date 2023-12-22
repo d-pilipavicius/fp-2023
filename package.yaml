@@ -21,7 +21,7 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
-- yaml 
+- yaml
 
 default-extensions:
 - ImportQualifiedPost
@@ -43,6 +43,17 @@ library:
   - free
   - time
   - transformers
+  - yaml
+  - directory 
+  - filepath
+  - aeson
+  - bytestring
+  - wreq
+  - scotty
+  - split
+  - lens
+  - text
+  - http-types
 
 executables:
   fp2023-select-all:
@@ -84,6 +95,36 @@ executables:
     - free
     - time
     - split
+  fp2023-sql-client:
+    main:                Main.hs
+    source-dirs:         sql_client
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - fp2023
+    - extra
+    - repline
+    - terminal-size
+    - wreq
+    - free 
+    - time
+    - aeson
+  fp2023-sql-server:
+    main:                Main.hs
+    source-dirs:         sql_server
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - fp2023
+    - extra
+    - aeson
+    - bytestring
+    - scotty
+    - http-types
 
 tests:
   fp2023-test:
@@ -96,3 +137,5 @@ tests:
     dependencies:
     - fp2023
     - hspec
+    - time 
+    - free

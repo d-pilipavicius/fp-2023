@@ -10,6 +10,16 @@
   (major1) == 0 && (major2) <  1 || \
   (major1) == 0 && (major2) == 1 && (minor) <= 0)
 #endif /* MIN_VERSION_fp2023 */
+/* package aeson-2.2.1.0 */
+#ifndef VERSION_aeson
+#define VERSION_aeson "2.2.1.0"
+#endif /* VERSION_aeson */
+#ifndef MIN_VERSION_aeson
+#define MIN_VERSION_aeson(major1,major2,minor) (\
+  (major1) <  2 || \
+  (major1) == 2 && (major2) <  2 || \
+  (major1) == 2 && (major2) == 2 && (minor) <= 1)
+#endif /* MIN_VERSION_aeson */
 /* package base-4.18.0.0 */
 #ifndef VERSION_base
 #define VERSION_base "4.18.0.0"
@@ -20,6 +30,36 @@
   (major1) == 4 && (major2) <  18 || \
   (major1) == 4 && (major2) == 18 && (minor) <= 0)
 #endif /* MIN_VERSION_base */
+/* package bytestring-0.11.4.0 */
+#ifndef VERSION_bytestring
+#define VERSION_bytestring "0.11.4.0"
+#endif /* VERSION_bytestring */
+#ifndef MIN_VERSION_bytestring
+#define MIN_VERSION_bytestring(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  11 || \
+  (major1) == 0 && (major2) == 11 && (minor) <= 4)
+#endif /* MIN_VERSION_bytestring */
+/* package directory-1.3.8.1 */
+#ifndef VERSION_directory
+#define VERSION_directory "1.3.8.1"
+#endif /* VERSION_directory */
+#ifndef MIN_VERSION_directory
+#define MIN_VERSION_directory(major1,major2,minor) (\
+  (major1) <  1 || \
+  (major1) == 1 && (major2) <  3 || \
+  (major1) == 1 && (major2) == 3 && (minor) <= 8)
+#endif /* MIN_VERSION_directory */
+/* package filepath-1.4.100.1 */
+#ifndef VERSION_filepath
+#define VERSION_filepath "1.4.100.1"
+#endif /* VERSION_filepath */
+#ifndef MIN_VERSION_filepath
+#define MIN_VERSION_filepath(major1,major2,minor) (\
+  (major1) <  1 || \
+  (major1) == 1 && (major2) <  4 || \
+  (major1) == 1 && (major2) == 4 && (minor) <= 100)
+#endif /* MIN_VERSION_filepath */
 /* package free-5.2 */
 #ifndef VERSION_free
 #define VERSION_free "5.2"
@@ -30,6 +70,36 @@
   (major1) == 5 && (major2) <  2 || \
   (major1) == 5 && (major2) == 2 && (minor) <= 0)
 #endif /* MIN_VERSION_free */
+/* package http-types-0.12.4 */
+#ifndef VERSION_http_types
+#define VERSION_http_types "0.12.4"
+#endif /* VERSION_http_types */
+#ifndef MIN_VERSION_http_types
+#define MIN_VERSION_http_types(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  12 || \
+  (major1) == 0 && (major2) == 12 && (minor) <= 4)
+#endif /* MIN_VERSION_http_types */
+/* package lens-5.2.3 */
+#ifndef VERSION_lens
+#define VERSION_lens "5.2.3"
+#endif /* VERSION_lens */
+#ifndef MIN_VERSION_lens
+#define MIN_VERSION_lens(major1,major2,minor) (\
+  (major1) <  5 || \
+  (major1) == 5 && (major2) <  2 || \
+  (major1) == 5 && (major2) == 2 && (minor) <= 3)
+#endif /* MIN_VERSION_lens */
+/* package scotty-0.21 */
+#ifndef VERSION_scotty
+#define VERSION_scotty "0.21"
+#endif /* VERSION_scotty */
+#ifndef MIN_VERSION_scotty
+#define MIN_VERSION_scotty(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  21 || \
+  (major1) == 0 && (major2) == 21 && (minor) <= 0)
+#endif /* MIN_VERSION_scotty */
 /* package split-0.2.4 */
 #ifndef VERSION_split
 #define VERSION_split "0.2.4"
@@ -40,6 +110,16 @@
   (major1) == 0 && (major2) <  2 || \
   (major1) == 0 && (major2) == 2 && (minor) <= 4)
 #endif /* MIN_VERSION_split */
+/* package text-2.0.2 */
+#ifndef VERSION_text
+#define VERSION_text "2.0.2"
+#endif /* VERSION_text */
+#ifndef MIN_VERSION_text
+#define MIN_VERSION_text(major1,major2,minor) (\
+  (major1) <  2 || \
+  (major1) == 2 && (major2) <  0 || \
+  (major1) == 2 && (major2) == 0 && (minor) <= 2)
+#endif /* MIN_VERSION_text */
 /* package time-1.12.2 */
 #ifndef VERSION_time
 #define VERSION_time "1.12.2"
@@ -60,6 +140,16 @@
   (major1) == 0 && (major2) <  6 || \
   (major1) == 0 && (major2) == 6 && (minor) <= 1)
 #endif /* MIN_VERSION_transformers */
+/* package wreq-0.5.4.2 */
+#ifndef VERSION_wreq
+#define VERSION_wreq "0.5.4.2"
+#endif /* VERSION_wreq */
+#ifndef MIN_VERSION_wreq
+#define MIN_VERSION_wreq(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  5 || \
+  (major1) == 0 && (major2) == 5 && (minor) <= 4)
+#endif /* MIN_VERSION_wreq */
 /* package yaml-0.11.11.2 */
 #ifndef VERSION_yaml
 #define VERSION_yaml "0.11.11.2"

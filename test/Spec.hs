@@ -4,13 +4,18 @@ import InMemoryTables qualified as D
 import Lib1
 import Lib2
 import Lib3
+import SQLServer qualified as SQLS
+import SQLCustomDataTypes qualified as SQLCDTS
 import CustomDataTypes qualified as CDTS
 import Control.Monad.Free (Free (..), liftF)
 import DataFrame qualified as DF (Column (..), ColumnType (..), Value (..), Row, DataFrame (..))
 import StackTestRefrenceTables
+import YamlHandler qualified as YH
 import GeneralConstants qualified as GC
 import Test.Hspec
 import Data.IORef
+import Data.Time (UTCTime)
+import YamlHandler (DFExpr(OValue))
 
 inMemoryDatabase :: IO [(String, IORef DF.DataFrame)]
 inMemoryDatabase = do
@@ -45,6 +50,9 @@ getDbFromInMemoryDatabase = do
   let db1 = mapDatabase names dfs []
   return $ Right db1
 
+testTime :: UTCTime
+testTime = read "2023-12-12 00:37:56.740852 UTC"
+
 runExecuteIO :: Lib3.Execution r -> IO r
 runExecuteIO (Pure r) = return r
 runExecuteIO (Free step) = do
@@ -52,14 +60,57 @@ runExecuteIO (Free step) = do
     runExecuteIO next
     where
         runStep :: Lib3.ExecutionAlgebra a -> IO a
-        runStep (Lib3.GetTime next) = Lib3.getCurrentTime >>= return . next
+        runStep (Lib3.GetTime next) = (return testTime) >>= return . next
         runStep (Lib3.LoadDatabase next) = getDbFromInMemoryDatabase >>= return . next
         runStep (Lib3.WriteOutTable tName df next) = updateTableInMemory df tName >>= return . next
-        runStep (Lib3.ExecuteLib2 db time boolVal st next) = (return $ do
-          db1 <- db
-          ps <- Lib2.parseStatement st
-          df <- Lib2.executeStatement db1 ps
-          return (CDTS.table ps, df)) >>= return . next
+
+tempDatabase :: IO (IORef Database)
+tempDatabase = do
+  let emptyTable = ("empty_table",DF.DataFrame [DF.Column "byDefaultEmptyRow" DF.StringType] [])
+  newIORef [D.tableEmployees, D.tableWithNulls, emptyTable]
+
+changeInDb :: String -> DF.DataFrame -> SQLCDTS.Database -> SQLCDTS.Database
+changeInDb tName df db = changeInDb1 tName df db []
+
+changeInDb1 :: String -> DF.DataFrame -> SQLCDTS.Database -> SQLCDTS.Database -> SQLCDTS.Database
+changeInDb1 _ _ [] dbTemp = dbTemp
+changeInDb1 tName df (x:xs) dbTemp =
+  if fst x == tName 
+    then dbTemp++[(tName,df)]++xs
+    else changeInDb1 tName df xs $ dbTemp++[x]
+
+removeInDb :: String -> SQLCDTS.Database -> SQLCDTS.Database
+removeInDb tName db = removeInDb1 tName db []
+
+removeInDb1 :: String -> SQLCDTS.Database -> SQLCDTS.Database -> SQLCDTS.Database
+removeInDb1 _ [] dbTemp = dbTemp
+removeInDb1 tName (x:xs) dbTemp = 
+  if fst x == tName
+    then dbTemp++xs
+    else removeInDb1 tName xs $ dbTemp++[x]
+
+runExecuteIOSQL :: SQLS.Execution r -> IO r
+runExecuteIOSQL (Pure r) = return r
+runExecuteIOSQL (Free step) = do
+    next <- runStep step
+    runExecuteIOSQL next
+    where
+        runStep :: SQLS.ExecutionAlgebra a -> IO a
+        runStep (SQLS.GetTime next) = (return testTime) >>= return . next
+        runStep (SQLS.LoadDatabase next) = do
+          dbRef <- tempDatabase
+          db <- readIORef dbRef
+          (return $ Right db)  >>= return . next
+        runStep (SQLS.WriteOutTable tName df next) = do
+          dbRef <- tempDatabase
+          db <- readIORef dbRef
+          let newDb = changeInDb tName df db
+          writeIORef dbRef newDb >>= return . next
+        runStep (SQLS.RemoveTable tName next) = do
+          dbRef <- tempDatabase
+          db <- readIORef dbRef
+          let newDb = removeInDb tName db
+          writeIORef dbRef newDb >>= return . next
 
 main :: IO ()
 main = hspec $ do
@@ -165,9 +216,138 @@ main = hspec $ do
     it "executes DELETE statement with a WHERE clause" $ do
       df <- runExecuteIO $ Lib3.executeSql "DELETE FROM employees WHERE id = 1;"
       df `shouldBe` Right deleteTable1
-    it "executed DELETE statement for all rows" $ do
+    it "executes DELETE statement for all rows" $ do
       df <- runExecuteIO $ Lib3.executeSql "DELETE FROM employees;"
       df `shouldBe` Right deleteTable2
+  describe "YamlHandler.toDFExpr" $ do
+    it "works with StringValue" $ do
+      YH.toDFExpr (DF.StringValue "value") `shouldBe` OValue (DF.StringValue "value")
+    it "works with IntegerValue" $ do
+      YH.toDFExpr (DF.IntegerValue 100) `shouldBe` OValue (DF.IntegerValue 100)
+    it "works with BoolValue" $ do
+      YH.toDFExpr (DF.BoolValue True) `shouldBe` OValue (DF.BoolValue True)
+    it "works with NullValue" $ do
+      YH.toDFExpr DF.NullValue `shouldBe` OValue DF.NullValue
+    it "works with Column" $ do
+      YH.toDFExpr (DF.Column "col1" DF.StringType) `shouldBe` YH.OColumn "col1" DF.StringType
+    it "works with DataFrame" $ do
+      YH.toDFExpr (snd D.tableEmployees) `shouldBe` employeesToDFExpr
+  describe "YamlHandler.render" $ do
+    it "renders tables with no rows" $ do
+      YH.render (YH.OTable (YH.OColumns [YH.OColumn "name" DF.StringType]) (YH.ORows [])) `shouldBe` emptyTableYAML
+    it "renders tables with values" $ do
+      YH.render employeesToDFExpr `shouldBe` employeesYAML
+  describe "SQLParserImplementation.parseStatement" $ do
+    it "executes SELECT with several tables" $ do
+      df <- runExecuteIOSQL $ SQLS.executeSql "SELECT * FROM employees, flags;"
+      df `shouldBe` Right selectLib3_1
+    it "executes SELECT with several tables and named columns" $ do
+      df <- runExecuteIOSQL $ SQLS.executeSql "SELECT employees.id, flags.value FROM flags, employees;" 
+      df `shouldBe` Right selectLib3_2
+    it "executes the NOW() function" $ do
+      df <- runExecuteIOSQL $ SQLS.executeSql "SELECT now() FROM empty_table;" 
+      df `shouldBe` Right selectLib3_3
+    it "executes INSERT statement with the general table layout" $ do
+      df <- runExecuteIOSQL $ SQLS.executeSql "INSERT INTO employees VALUES (3, 'John', 'Doe');" 
+      df `shouldBe` Right insertTable1
+    it "executes INSERT statement with multiple VALUES" $ do
+      df <-runExecuteIOSQL $ SQLS.executeSql "INSERT INTO employees VALUES (4, 'Name', 'Surname'), (5, 'NoSurname', null), (6, 'R2D2'), (7);" 
+      df `shouldBe` Right insertTable2
+    it "executes INSERT statement with clarified rows to which you want to write" $ do
+      df <- runExecuteIOSQL $ SQLS.executeSql "INSERT INTO employees (id, surname) VALUES (8, 'Updating');" 
+      df `shouldBe` Right insertTable3
+    it "executes INSERT statement with MAX(), SUM() and NOW() functions" $ do
+      df <- runExecuteIOSQL $ SQLS.executeSql "INSERT INTO employees (surname, id, name) VALUES (NOW(), SUM(id), MAX(name));" 
+      df `shouldBe` Right insertTable4
+    it "executes UPDATE statement with clarified values for each column with a WHERE clause" $ do
+      df <- runExecuteIOSQL $ SQLS.executeSql "UPDATE employees SET name = 'Equal', surname = 'Two' WHERE id = 2;"
+      df `shouldBe` Right updateTable1 
+    it "executes UPDATE statement with MAX(), SUM(), NOW() functions" $ do
+      df <- runExecuteIOSQL $ SQLS.executeSql "UPDATE employees SET id = SUM(id), name = MAX(name), surname = NOW() WHERE id >= 2;" 
+      df `shouldBe` Right updateTable2 
+    it "executes DELETE statement with a WHERE clause" $ do
+      df <- runExecuteIOSQL $ SQLS.executeSql "DELETE FROM employees WHERE id = 1;"
+      df `shouldBe` Right deleteTable1
+    it "executes DELETE statement for all rows" $ do
+      df <- runExecuteIOSQL $ SQLS.executeSql "DELETE FROM employees;"
+      df `shouldBe` Right deleteTable2
+    it "executes ORDER BY statement" $ do
+      df <- runExecuteIOSQL $ SQLS.executeSql "SELECT * FROM flags ORDER BY value DESC, flag DESC;"
+      df `shouldBe` Right orderBy_1
+    it "executes CREATE TABLE statement" $ do
+      df <- runExecuteIOSQL $ SQLS.executeSql "CREATE TABLE table (col IntegerType, name StringType);"
+      df `shouldBe` Right createTable_1
+    it "executes DROP TABLE statement" $ do 
+      df <- runExecuteIOSQL $ SQLS.executeSql "DROP TABLE empty_table;"
+      df `shouldBe` Right (DF.DataFrame [] [])
+
+createTable_1 :: DF.DataFrame
+createTable_1 = 
+  DF.DataFrame 
+  [
+    DF.Column "col" DF.IntegerType,
+    DF.Column "name" DF.StringType] 
+  []
+
+orderBy_1 :: DF.DataFrame
+orderBy_1 = 
+  DF.DataFrame
+  [ DF.Column "flag" DF.StringType,
+    DF.Column "value" DF.BoolType]
+  [ [DF.StringValue "b", DF.BoolValue True],
+    [DF.StringValue "a", DF.BoolValue True],
+    [DF.StringValue "b", DF.BoolValue False],
+    [DF.StringValue "b", DF.NullValue]]
+
+emptyTableYAML :: String
+emptyTableYAML = 
+  concat 
+    [ 
+      "- - - name\n",
+      "    - StringType\n",
+      "- []\n"]
+
+employeesYAML :: String
+employeesYAML = 
+  concat 
+  [ 
+    "- - - id\n",
+    "    - IntegerType\n",
+    "  - - name\n",
+    "    - StringType\n",
+    "  - - surname\n",
+    "    - StringType\n",
+    "- - - contents: 1\n",
+    "      tag: IntegerValue\n",
+    "    - contents: Vi\n",
+    "      tag: StringValue\n",
+    "    - contents: Po\n",
+    "      tag: StringValue\n",
+    "  - - contents: 2\n",
+    "      tag: IntegerValue\n",
+    "    - contents: Ed\n",
+    "      tag: StringValue\n",
+    "    - contents: Dl\n",
+    "      tag: StringValue\n"] 
+
+
+employeesToDFExpr :: YH.DFExpr
+employeesToDFExpr = 
+  YH.OTable 
+  (YH.OColumns 
+    [YH.OColumn "id" DF.IntegerType
+    ,YH.OColumn "name" DF.StringType
+    ,YH.OColumn "surname" DF.StringType]) 
+  (YH.ORows 
+    [YH.ORow 
+      [YH.OValue (DF.IntegerValue 1)
+      ,YH.OValue (DF.StringValue "Vi")
+      ,YH.OValue (DF.StringValue "Po")]
+    ,YH.ORow 
+      [YH.OValue (DF.IntegerValue 2)
+      ,YH.OValue (DF.StringValue "Ed")
+      ,YH.OValue (DF.StringValue "Dl")]
+      ])
 
 selectLib3_1 :: DF.DataFrame 
 selectLib3_1 = 
@@ -204,7 +384,7 @@ selectLib3_3 :: DF.DataFrame
 selectLib3_3 = 
   DF.DataFrame 
   [ DF.Column GC._TIME_COLUMN_NAME DF.StringType]
-  [ [DF.StringValue GC._TIME_INSERT_VALUE]]
+  [ [DF.StringValue "2023-12-12 00:37:56.740852 UTC"]]
 
 insertTable1 :: DF.DataFrame 
 insertTable1 = 
@@ -247,7 +427,7 @@ insertTable4 =
     DF.Column "surname" DF.StringType] 
   [ [DF.IntegerValue 1,DF.StringValue "Vi",DF.StringValue "Po"],
     [DF.IntegerValue 2,DF.StringValue "Ed",DF.StringValue "Dl"],
-    [DF.IntegerValue 3,DF.StringValue "Vi",DF.StringValue GC._TIME_INSERT_VALUE]]
+    [DF.IntegerValue 3,DF.StringValue "Vi",DF.StringValue "2023-12-12 00:37:56.740852 UTC"]]
 
 updateTable1 :: DF.DataFrame 
 updateTable1 = 
@@ -265,7 +445,7 @@ updateTable2 =
     DF.Column "name" DF.StringType,
 	DF.Column "surname" DF.StringType] 
   [ [DF.IntegerValue 1,DF.StringValue "Vi",DF.StringValue "Po"],
-    [DF.IntegerValue 3,DF.StringValue "Vi",DF.StringValue GC._TIME_INSERT_VALUE]]
+    [DF.IntegerValue 3,DF.StringValue "Vi",DF.StringValue "2023-12-12 00:37:56.740852 UTC"]]
 
 deleteTable1 :: DF.DataFrame  
 deleteTable1 =

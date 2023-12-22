@@ -4,16 +4,16 @@
     - BoolType
 - - - contents: a
       tag: StringValue
-    - contents: true
+    - contents: True
       tag: BoolValue
   - - contents: b
       tag: StringValue
-    - contents: true
+    - contents: True
       tag: BoolValue
   - - contents: b
       tag: StringValue
     - tag: NullValue
   - - contents: b
       tag: StringValue
-    - contents: false
+    - contents: False
       tag: BoolValue
