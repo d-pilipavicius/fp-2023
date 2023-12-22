@@ -4,7 +4,12 @@ module YamlHandler(
     readDFYAML,
     readDBYAML,
     writeDFYAML,
-    readDBWithTablesYAML
+    readDBWithTablesYAML,
+    DFExpr (..),
+    toDFExpr,
+    render,
+    removeDFs,
+    saveDB
   )
 where 
 
@@ -16,6 +21,7 @@ import Errors (_ERROR_COULD_NOT_LOAD_DATABASE, _ERROR_COULD_NOT_LOAD_TABLE)
 import Data.List.Split (splitOn)
 import System.Directory
 import System.FilePath
+import SQLCustomDataTypes (Database)
 
 instance FromJSON Value
 instance FromJSON Column
@@ -34,7 +40,7 @@ data DFExpr
   | ORow [DFExpr]
   | OColumn String ColumnType
   | OValue Value
-  deriving Show
+  deriving (Eq, Show)
 
 render :: DFExpr -> String
 render (OValue (IntegerValue i)) = concat ["contents: ",show i,"\ntag: IntegerValue\n"]
@@ -104,6 +110,29 @@ writeDFYAML tName df = do
   dir <- defaultDbDir
   writeFile (dir </> (tName++".yaml")) $ dfToYAMLFileOutput df
 
+removeDFs :: [String] -> IO ()
+removeDFs [] = return () 
+removeDFs (x:xs) = do
+  dir <- defaultDbDir
+  let fileName = dir </> x++".yaml" 
+  exists <- doesFileExist fileName
+  if exists
+    then do
+      removeFile fileName
+      removeDFs xs
+    else removeDFs xs
+
+saveDB :: Database -> IO ()
+saveDB db = do
+  names <- readDBYAML
+  case names of
+    Left l -> error l
+    Right r -> do
+      let oldNames = map fst db
+      let discardDFs = listSubtraction r oldNames
+      removeDFs discardDFs
+      writeDBAllDF db
+
 dfToYAMLFileOutput :: DataFrame -> String
 dfToYAMLFileOutput df = render $ toDFExpr df
 
@@ -115,17 +144,21 @@ readDBYAML = do
     Left _ -> return $ Left _ERROR_COULD_NOT_LOAD_DATABASE
     Right r -> return $ Right r
 
---THIS SHOULD BE USED ONLY TO CHANGE THE DATABASE BY HAND
+writeDBAllDF :: Database -> IO ()
+writeDBAllDF db = do
+  writeDBYAML $ fmap fst db
+  writeAllDF db
+
+writeAllDF :: Database -> IO ()
+writeAllDF [] = return ()
+writeAllDF (x:xs) = do 
+  writeDFYAML (fst x) (snd x)
+  writeAllDF xs
+
 writeDBYAML :: [String] -> IO ()
 writeDBYAML strs = do
   dir <- dbInfoPath
   encodeFile dir strs
---THIS SHOULD BE USED ONLY TO CHANGE THE DATABASE BY HAND END
-
-writeDFYAML1 :: String -> DataFrame -> IO ()
-writeDFYAML1 s df = do 
-  dir <- defaultDbDir
-  encodeFile (dir </> s ++".yaml") df
 
 readDBWithTablesYAML :: IO (Either ErrorMessage [(String, DataFrame)])
 readDBWithTablesYAML = do

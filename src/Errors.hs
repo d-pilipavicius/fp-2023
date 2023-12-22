@@ -18,7 +18,7 @@ _ERROR_UNSPECIFIED_TABLE :: String -> String
 _ERROR_UNSPECIFIED_TABLE s = "Please specify a table name. For example: "++s++"."
 --GENERAL ERRORS END
 
---Errors with no place yet (Executor)
+--Other errors (Executor)
 _ERROR_STATEMENT_NOT_INIT :: String
 _ERROR_STATEMENT_NOT_INIT = "ParsedStatement not initialized."
 
@@ -81,7 +81,10 @@ _ERROR_EXECUTE_INSERT_NOT_ENOUGH_VALUES = "When providing specific columns, plea
 
 _ERROR_EXECUTE_NOT_COLUMN_NAME :: String
 _ERROR_EXECUTE_NOT_COLUMN_NAME = "When naming columns, only use column names, not * or any functions."
---Errors with no place yet END (Executor)
+
+_ERROR_COLUMN_COUNT_DIFFERS :: String
+_ERROR_COLUMN_COUNT_DIFFERS = "Cannot insert more values than column count to a table."
+--Other errors END (Executor)
 
 --SHOW errors
 _ERROR_SHOW_NO_TABLES :: String

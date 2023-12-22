@@ -1,5 +1,9 @@
 # fp-2023
 
+Submitting
+
+Consider including some screenshots demonstrating that your program actually works. Use stack run fp2023-sql-client and stack run fp2023-sql-server to run a few queries.
+
 ## Setup
 1. Checkout the repository. This project uses GitHub Actions haskell workflow,
 please preserve its configuration.

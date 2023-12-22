@@ -39,6 +39,14 @@ library
       Lib3
       Parser
       ParserConstants
+      SQLCustomDataTypes
+      SQLExecutor
+      SQLExecutorConstants
+      SQLExecutorImplementation
+      SQLParser
+      SQLParserConstants
+      SQLParserImplementation
+      SQLServer
       StackTestRefrenceTables
       YamlHandler
   other-modules:
@@ -49,14 +57,21 @@ library
       ImportQualifiedPost
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      base >=4.7 && <5
-    , free
-    , time
-    , transformers
-    , yaml
-    , split
+      aeson
+    , base >=4.7 && <5
+    , bytestring
     , directory
     , filepath
+    , free
+    , http-types
+    , lens
+    , scotty
+    , split
+    , text
+    , time
+    , transformers
+    , wreq
+    , yaml
   default-language: Haskell2010
 
 executable fp2023-manipulate
@@ -116,6 +131,55 @@ executable fp2023-select-more
     , yaml
   default-language: Haskell2010
 
+executable fp2023-sql-client
+  main-is: Main.hs
+  other-modules:
+      Paths_fp2023
+  hs-source-dirs:
+      sql_client
+  default-extensions:
+      ImportQualifiedPost
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , bytestring
+    , extra
+    , fp2023
+    , free
+    , http-types
+    , lens
+    , repline
+    , terminal-size
+    , time
+    , wreq
+    , yaml
+  default-language: Haskell2010
+
+executable fp2023-sql-server
+  main-is: Main.hs
+  other-modules:
+      Paths_fp2023
+  hs-source-dirs:
+      sql_server
+  default-extensions:
+      ImportQualifiedPost
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , bytestring
+    , extra
+    , fp2023
+    , http-types
+    , scotty
+    , text
+    , yaml
+    , free
+    , time 
+    , unix
+  default-language: Haskell2010
+
 test-suite fp2023-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
@@ -129,7 +193,8 @@ test-suite fp2023-test
   build-depends:
       base >=4.7 && <5
     , fp2023
-    , hspec
-    , yaml
     , free
+    , hspec
+    , time
+    , yaml
   default-language: Haskell2010

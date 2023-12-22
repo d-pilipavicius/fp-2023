@@ -69,7 +69,7 @@ isColumn :: DataFrame -> String -> Bool
 isColumn (DataFrame c _) s = isColumn1 s c
 
 areColumns :: DataFrame -> [String] -> Either ErrorMessage ()
-areColumns df [] = Right ()
+areColumns _ [] = Right ()
 areColumns df (x:xs) = 
   if isColumn df x
     then areColumns df xs 

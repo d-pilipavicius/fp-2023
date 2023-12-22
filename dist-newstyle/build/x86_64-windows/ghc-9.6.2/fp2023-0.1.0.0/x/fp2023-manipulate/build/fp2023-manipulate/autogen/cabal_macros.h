@@ -60,6 +60,16 @@
   (major1) == 0 && (major2) <  4 || \
   (major1) == 0 && (major2) == 4 && (minor) <= 2)
 #endif /* MIN_VERSION_repline */
+/* package split-0.2.4 */
+#ifndef VERSION_split
+#define VERSION_split "0.2.4"
+#endif /* VERSION_split */
+#ifndef MIN_VERSION_split
+#define MIN_VERSION_split(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  2 || \
+  (major1) == 0 && (major2) == 2 && (minor) <= 4)
+#endif /* MIN_VERSION_split */
 /* package terminal-size-0.3.4 */
 #ifndef VERSION_terminal_size
 #define VERSION_terminal_size "0.3.4"
